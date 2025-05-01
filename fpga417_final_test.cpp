@@ -19,7 +19,7 @@ int main(){
     top_fir(input_real,input_img,coef_real, coef_img, output_img,output_real);
 
     for (int i=0; i<LENGTH; i++){
-        printf("output %d real part: %d img part: %d \n",i,output_real[i],output_img[i]);
+        printf("output %d real part: %x img part: %x \n",i,output_real[i],output_img[i]);
     }
 
     return 0;

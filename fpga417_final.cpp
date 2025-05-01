@@ -14,11 +14,9 @@
 //     //top_cordic_rotator(img_stream, real_stream, output_real, output_img, input_length);
 // }
 
-void top_fir(FIR* input_real, FIR* input_img, FIR kernel_real[KERNEL_SIZE], FIR kernel_img[KERNEL_SIZE], FIR_OUT output_img[LENGTH], FIR_OUT output_real[LENGTH]){
+void top_fir(FIR input_real[LENGTH], FIR input_img[LENGTH], FIR kernel_real[KERNEL_SIZE], FIR kernel_img[KERNEL_SIZE], FIR_OUT output_img[LENGTH], FIR_OUT output_real[LENGTH]){
     
-    //#pragma HLS PIPELINE OFF
     for (int i=0; i<LENGTH; i++){
-        //#pragma HLS UNROLL factor=2
         fir(input_real[i], &output_real[i],  kernel_real, input_img[i], &output_img[i], kernel_img); //Fir calculation
         
     }
@@ -35,6 +33,7 @@ void fir(FIR input_real, FIR_OUT *output_real, FIR taps_real[KERNEL_SIZE], FIR i
     FIR_OUT ab = 0;
     FIR_OUT Ab = 0;
     FIR_OUT aB = 0;
+
 	for (int i = KERNEL_SIZE-1; i>0; i--){ //Shift the registers
         delay_line_real[i] = delay_line_real[i-1];
         delay_line_img[i] = delay_line_img[i-1];
@@ -42,8 +41,9 @@ void fir(FIR input_real, FIR_OUT *output_real, FIR taps_real[KERNEL_SIZE], FIR i
     
     delay_line_real[0] = input_real;
     delay_line_img[0] = input_img;
-
+    
     for (int i=0; i<KERNEL_SIZE; i++){ //Calculate the output for each part of the calculation
+
         AB += delay_line_real[i]*taps_real[i];
         ab += delay_line_img[i]*taps_img[i];
         Ab += delay_line_real[i]*taps_img[i];
