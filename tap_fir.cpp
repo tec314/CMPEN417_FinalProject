@@ -53,8 +53,10 @@ void fir(FIR input_real, int *output_real, FIR taps_real[KERNEL_SIZE], FIR input
     delay_line_real[0] = input_real;
     delay_line_img[0] = input_img;
     
-    for (int i=0; i<KERNEL_SIZE; i++){ //Calculate the output for each part of the calculation
 
+    for (int i=0; i<KERNEL_SIZE; i++){ //Calculate the output for each part of the calculation
+        //#pragma HLS UNROLL factor=4
+        //#pragma HLS PIPELINE II=1
         AB += delay_line_real[i]*taps_real[i];
         ab += delay_line_img[i]*taps_img[i];
         Ab += delay_line_real[i]*taps_img[i];

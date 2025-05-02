@@ -5,7 +5,11 @@
 
 void fpga417_fir(int input_real[25], int input_img[25], float output_mag[LENGTH], float output_phase[LENGTH])
 {
-
+#pragma HLS INTERFACE mode=m_axi port=input_real offset=slave bundle=gmem0
+#pragma HLS INTERFACE mode=m_axi port=input_img offset=slave bundle=gmem1
+#pragma HLS INTERFACE mode=m_axi port=output_mag offset=slave bundle=gmem2
+#pragma HLS INTERFACE mode=m_axi port=output_phase offset=slave bundle=gmem3
+#pragma HLS INTERFACE mode=s_axilite port=return bundle=BUS_A
 #pragma HLS DATAFLOW
 
 

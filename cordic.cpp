@@ -5,6 +5,7 @@ const int NUM_ITERATIONS=15;
 
 void top_cordic_rotator(hls::stream<int>&cos, hls::stream<int>&sin, float mag[LENGTH], float theta[LENGTH]){
     for (int i=0; i<LENGTH; i++){
+        #pragma HLS PIPELINE II=1
         FIXED_POINT cos_fixed, sin_fixed, mag_fixed, theta_fixed;
         int temp_cos, temp_sin;
 
@@ -92,7 +93,6 @@ void cordic_rotator(FIXED_POINT cos, FIXED_POINT sin, FIXED_POINT *mag, FIXED_PO
     
     //Iteratively rotate to try and get vector as close to +x axis as possible
     for (int i=0; i<NUM_ITERATIONS; i++) {
-        //#pragma HLS PIPELINE II=1
         FIXED_POINT shift_cos = current_cos >> i;
         FIXED_POINT shift_sin = current_sin >> i;
 
