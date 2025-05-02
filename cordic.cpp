@@ -1,17 +1,25 @@
 #include "cordic.h"
+#include "tap_fir.h"
 
-const int NUM_ITERATIONS=16;
+const int NUM_ITERATIONS=15;
 
-void top_cordic_rotator(FIR_OUT cos, FIR_OUT sin, float *mag, float *theta){
-    FIXED_POINT cos_fixed, sin_fixed, mag_fixed, theta_fixed;
+void top_cordic_rotator(hls::stream<int>&cos, hls::stream<int>&sin, float mag[LENGTH], float theta[LENGTH]){
+    for (int i=0; i<LENGTH; i++){
+        FIXED_POINT cos_fixed, sin_fixed, mag_fixed, theta_fixed;
+        int temp_cos, temp_sin;
 
-    cos_fixed=(FIXED_POINT)cos;
-    sin_fixed=(FIXED_POINT)sin;
+        // cos_fixed=(FIXED_POINT)cos;
+        // sin_fixed=(FIXED_POINT)sin;
+        cos.read(temp_cos);
+        sin.read(temp_sin);
+        cos_fixed=(FIXED_POINT)temp_cos;
+        sin_fixed=(FIXED_POINT)temp_sin;
 
-    cordic_rotator(cos_fixed, sin_fixed, &mag_fixed, &theta_fixed);
+        cordic_rotator(cos_fixed, sin_fixed, &mag_fixed, &theta_fixed);
 
-    *mag=mag_fixed.to_float();
-    *theta=theta_fixed.to_float();    
+        mag[i]=mag_fixed.to_float();
+        theta[i]=theta_fixed.to_float(); 
+    }
 }
 
 void cordic_rotator(FIXED_POINT cos, FIXED_POINT sin, FIXED_POINT *mag, FIXED_POINT *theta){
@@ -30,8 +38,7 @@ void cordic_rotator(FIXED_POINT cos, FIXED_POINT sin, FIXED_POINT *mag, FIXED_PO
     0.0004882812111948983,
     0.00024414062014936177,
     0.00012207031189367021,
-    0.00006103515617420877,
-    0.00003051757811552610
+    0.00006103515617420877
 };
 
     //Set initial vector to rotate
